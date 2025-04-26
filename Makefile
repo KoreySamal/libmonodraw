@@ -14,5 +14,8 @@ test_breathing_ring: tests/breathing_ring.c
 test_universe: tests/universe.c
 	gcc tests/universe.c -o test_universe -lmonodraw
 
+test_text: tests/text.c
+	gcc tests/text.c -o test_text -lmonodraw
+
 clear:
-	rm libmonodraw.so test_breathing_ring test_universe
+	rm libmonodraw.so test_breathing_ring test_universe test_text

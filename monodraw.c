@@ -2,6 +2,7 @@
 #include <math.h>
 #include <wchar.h>
 #include "monodraw.h"
+#include <float.h>
 
 const wchar_t canvas_symbols[] = {
     L' ',
@@ -96,11 +97,22 @@ struct Canvas* create_canvas(int width, int height) {
         return NULL;
     }
 
+    canvas->chars = calloc(
+        canvas->char_width * canvas->char_height,
+        sizeof(wchar_t)
+    );
+    if (canvas->chars == NULL) {
+        free(canvas->dots);
+        free(canvas);
+        return NULL;
+    }
+
     return canvas;
 }
 
 void destroy_canvas(struct Canvas* canvas) {
     free(canvas->dots);
+    free(canvas->chars);
     free(canvas);
 }
 
@@ -129,27 +141,53 @@ void set_canvas_dot(struct Canvas* canvas, int x, int y, int state) {
     }
 }
 
+void set_canvas_char(struct Canvas* canvas, int x, int y, wchar_t c) {
+    if (
+        x < 0 ||
+        y < 0 ||
+        x > canvas->char_width ||
+        y > canvas->char_height
+    ) {
+        return;
+    }
+
+    canvas->chars[y * canvas->char_width + x] = c;
+}
+
 void print_canvas(struct Canvas* canvas) {
-    int c;
+    wchar_t c;
+    int d;
     for (int y = 0; y < canvas->char_height; y++) {
         for (int x = 0; x < canvas->char_width; x++) {
-            c = canvas->dots[y * canvas->char_width + x];
-            putwchar(canvas_symbols[c]);
+            c = canvas->chars[y * canvas->char_width + x];
+            if (c == L'\0') {
+                d = canvas->dots[y * canvas->char_width + x];
+                putwchar(canvas_symbols[d]);
+            } else {
+                putwchar(c);
+            }
         }
         putwchar('\n');
     }
 }
 
 void clear_canvas(struct Canvas* canvas) {
+    int i;
     for (int y = 0; y < canvas->char_height; y++) {
         for (int x = 0; x < canvas->char_width; x++) {
-            canvas->dots[y * canvas->char_width + x] = 0;
+            i = y * canvas->char_width + x;
+            canvas->dots[i] = 0;
+            canvas->chars[i] = '\0';
         }
     }
 }
 
-void draw_dot(struct Canvas* canvas, int x, int y) {
-    set_canvas_dot(canvas, x * aspect, y, 1);
+void draw_dot(struct Canvas* canvas, float x, float y) {
+    set_canvas_dot(canvas, roundf(x * aspect), roundf(y), 1);
+}
+
+void draw_char(struct Canvas* canvas, float x, float y, wchar_t c) {
+    set_canvas_char(canvas, roundf(x / 2 * aspect), roundf(y / 3), c);
 }
 
 void draw_line(
@@ -177,6 +215,39 @@ void draw_line(
             y = roundf(y_start + i * sinf(angle) + j * cosf(-angle));
             set_canvas_dot(canvas, x, y, 1);
         }
+    }
+}
+
+void draw_text(
+    struct Canvas* canvas,
+    float x_start,
+    float y_start,
+    float max_width,
+    float max_height,
+    wchar_t* text
+) {
+    x_start = roundf(x_start / 2 * aspect);
+    y_start = roundf(y_start / 3);
+    int x_end = max_width == 0 ? FLT_MAX : x_start + roundf(max_width * aspect / 2);
+    int y_end = max_height == 0 ? FLT_MAX : y_start + roundf(max_height / 3);
+
+    int x = x_start;
+    int y = y_start;
+    for (int i = 0; text[i] != L'\0'; i++) {
+        if (text[i] == L'\n') {
+            y++;
+            x = x_start;
+            continue;
+        }
+        if (x > x_end) {
+            y++;
+            x = x_start;
+        }
+        if (y > y_end) {
+            break;
+        }
+        set_canvas_char(canvas, x, y, text[i]);
+        x++;
     }
 }
 
