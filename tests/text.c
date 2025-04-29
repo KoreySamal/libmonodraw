@@ -7,7 +7,7 @@ int main() {
 
     struct Canvas* canvas = create_canvas(100, 100);
 
-    draw_frame(canvas, 30.5, 31, 62, 60, 1);
+    draw_frame(canvas, 30.5, 31, 62, 60, 1, 1);
     draw_char(canvas, 32, 32, L'a');
     draw_char(canvas, 60, 32, L'b');
     draw_char(canvas, 60, 58, L'c');

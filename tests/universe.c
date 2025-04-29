@@ -25,14 +25,15 @@ int main() {
         draw_dot(
             canvas,
             star_positions[j][0],
-            star_positions[j][1]
+            star_positions[j][1],
+            1
         );
     }
 
-    draw_black_hole(canvas, 50, 50, 10, 0.5);
+    draw_black_hole(canvas, 50, 50, 10, 0.5, 1);
 
-    draw_circle(canvas, 20, 30, 5);
-    draw_circle(canvas, 80, 90, 20);
+    draw_circle(canvas, 20, 30, 5, 1);
+    draw_circle(canvas, 80, 90, 20, 1);
 
     system("clear");
     print_canvas(canvas);
