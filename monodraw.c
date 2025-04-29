@@ -354,6 +354,91 @@ void draw_frame(
     draw_line(canvas, x_start, y_start - half_width, x_start, y_end + half_width, width);
 }
 
+void draw_triangle(
+    struct Canvas* canvas,
+    float x1,
+    float y1,
+    float x2,
+    float y2,
+    float x3,
+    float y3
+) {
+    x1 *= aspect;
+    x2 *= aspect;
+    x3 *= aspect;
+
+    float temp;
+    if (y2 > y3) {
+        temp = y2;
+        y2 = y3;
+        y3 = temp;
+        temp = x2;
+        x2 = x3;
+        x3 = temp;
+    }
+
+    if (y1 > y2) {
+        temp = y1;
+        y1 = y2;
+        y2 = temp;
+        temp = x1;
+        x1 = x2;
+        x2 = temp;
+    }
+
+    if (y2 > y3) {
+        temp = y2;
+        y2 = y3;
+        y3 = temp;
+        temp = x2;
+        x2 = x3;
+        x3 = temp;
+    }
+
+    float x4 = x1 + ((y2 - y1) / (y3 - y1)) * (x3 - x1);
+    float y4 = y2;
+
+    float inv_slope1 = (x2 - x1) / (y2 - y1);
+    float inv_slope2 = (x4 - x1) / (y4 - y1);
+
+    if (inv_slope1 > inv_slope2) {
+        temp = inv_slope1;
+        inv_slope1 = inv_slope2;
+        inv_slope2 = temp;
+    }
+
+    float cur_x1 = x1;
+    float cur_x2 = x1;
+
+    for (int scanline_y = roundf(y1); scanline_y <= roundf(y2); scanline_y++) {
+        for (float x = roundf(cur_x1); x <= roundf(cur_x2); x++) {
+            set_canvas_dot(canvas, x, scanline_y, 1);
+        }
+        cur_x1 += inv_slope1;
+        cur_x2 += inv_slope2;
+    }
+
+    inv_slope1 = (x3 - x2) / (y3 - y2);
+    inv_slope2 = (x3 - x4) / (y3 - y4);
+
+    if (inv_slope1 < inv_slope2) {
+        temp = inv_slope1;
+        inv_slope1 = inv_slope2;
+        inv_slope2 = temp;
+    }
+
+    cur_x1 = x3;
+    cur_x2 = x3;
+
+    for (int scanline_y = roundf(y3); scanline_y >= roundf(y2); scanline_y--) {
+        for (float x = roundf(cur_x1); x <= roundf(cur_x2); x++) {
+            set_canvas_dot(canvas, x, scanline_y, 1);
+        }
+        cur_x1 -= inv_slope1;
+        cur_x2 -= inv_slope2;
+    }
+}
+
 void draw_black_hole(
     struct Canvas* canvas,
     float x_center,

@@ -74,6 +74,16 @@ void draw_frame(
     float width
 );
 
+void draw_triangle(
+    struct Canvas* canvas,
+    float x1,
+    float y1,
+    float x2,
+    float y2,
+    float x3,
+    float y3
+);
+
 void draw_black_hole(
     struct Canvas* canvas,
     float x_center,

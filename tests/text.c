@@ -1,7 +1,6 @@
 #include <locale.h>
 #include <monodraw.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 int main() {
     setlocale(LC_ALL, "");

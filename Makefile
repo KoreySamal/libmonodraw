@@ -17,5 +17,11 @@ test_universe: tests/universe.c
 test_text: tests/text.c
 	gcc tests/text.c -o test_text -lmonodraw
 
+test_triangle: tests/triangle.c
+	gcc tests/triangle.c -o test_triangle -lmonodraw
+
+test_cube: tests/cube.c
+	gcc tests/cube.c -o test_cube -lmonodraw
+
 clear:
 	rm libmonodraw.so test_breathing_ring test_universe test_text
