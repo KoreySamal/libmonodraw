@@ -13,7 +13,7 @@ int main() {
         clear_canvas(canvas);
 
         float size = fabsf(sinf(i / 100.0));
-        draw_ring(canvas, 50, 50, 50 * size, 1);
+        draw_ring(canvas, 50, 50, 50 * size, 1, 1);
 
         system("clear");
         print_canvas(canvas);

@@ -20,7 +20,7 @@ void print_canvas(struct Canvas* canvas);
 
 void clear_canvas(struct Canvas* canvas);
 
-void draw_dot(struct Canvas* canvas, float x, float y);
+void draw_dot(struct Canvas* canvas, float x, float y, int state);
 
 void draw_char(struct Canvas* canvas, float x, float y, wchar_t c);
 
@@ -30,7 +30,8 @@ void draw_line(
     float y_start,
     float x_end,
     float y_end,
-    float width
+    float width,
+    int state
 );
 
 void draw_text(
@@ -47,14 +48,16 @@ void draw_ring(
     float x_center,
     float y_center,
     float radius,
-    float width
+    float width,
+    int state
 );
 
 void draw_circle(
     struct Canvas* canvas,
     float x_center,
     float y_center,
-    float radius
+    float radius,
+    int state
 );
 
 void draw_rectangle(
@@ -62,7 +65,8 @@ void draw_rectangle(
     float x_start,
     float y_start,
     float x_end,
-    float y_end
+    float y_end,
+    int state
 );
 
 void draw_frame(
@@ -71,7 +75,8 @@ void draw_frame(
     float y_start,
     float x_end,
     float y_end,
-    float width
+    float width,
+    int state
 );
 
 void draw_triangle(
@@ -81,7 +86,8 @@ void draw_triangle(
     float x2,
     float y2,
     float x3,
-    float y3
+    float y3,
+    int state
 );
 
 void draw_black_hole(
@@ -89,7 +95,8 @@ void draw_black_hole(
     float x_center,
     float y_center,
     float radius,
-    float width
+    float width,
+    int state
 );
 
 #endif

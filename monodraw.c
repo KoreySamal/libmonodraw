@@ -182,8 +182,8 @@ void clear_canvas(struct Canvas* canvas) {
     }
 }
 
-void draw_dot(struct Canvas* canvas, float x, float y) {
-    set_canvas_dot(canvas, roundf(x * aspect), roundf(y), 1);
+void draw_dot(struct Canvas* canvas, float x, float y, int state) {
+    set_canvas_dot(canvas, roundf(x * aspect), roundf(y), state);
 }
 
 void draw_char(struct Canvas* canvas, float x, float y, wchar_t c) {
@@ -196,7 +196,8 @@ void draw_line(
     float y_start,
     float x_end,
     float y_end,
-    float width
+    float width,
+    int state
 ) {
     float cathesus1 = x_end - x_start;
     float cathesus2 = y_end - y_start;
@@ -213,7 +214,7 @@ void draw_line(
         for (float i = hypot; i >= 0; i -= step) {
             x = roundf(x_start + i * cosf(angle) * aspect + j * sinf(-angle) * aspect);
             y = roundf(y_start + i * sinf(angle) + j * cosf(-angle));
-            set_canvas_dot(canvas, x, y, 1);
+            set_canvas_dot(canvas, x, y, state);
         }
     }
 }
@@ -256,7 +257,8 @@ void draw_ring(
     float x_center,
     float y_center,
     float radius,
-    float width
+    float width,
+    int state
 ) {
     x_center *= aspect;
 
@@ -275,7 +277,7 @@ void draw_ring(
             distance = hypotf(cathesus1, cathesus2);
 
             if (fabsf(distance - radius) < width) {
-                set_canvas_dot(canvas, x, y, 1);
+                set_canvas_dot(canvas, x, y, state);
             }
         }
     }
@@ -285,7 +287,8 @@ void draw_circle(
     struct Canvas* canvas,
     float x_center,
     float y_center,
-    float radius
+    float radius,
+    int state
 ) {
     x_center *= aspect;
 
@@ -304,7 +307,7 @@ void draw_circle(
             distance = hypotf(cathesus1, cathesus2);
 
             if (distance <= radius) {
-                set_canvas_dot(canvas, x, y, 1);
+                set_canvas_dot(canvas, x, y, state);
             }
         }
     }
@@ -315,7 +318,8 @@ void draw_rectangle(
     float x_start,
     float y_start,
     float x_end,
-    float y_end
+    float y_end,
+    int state
 ) {
     x_start *= aspect;
     x_end *= aspect;
@@ -334,7 +338,7 @@ void draw_rectangle(
 
     for (float y = y_start; y <= y_end; y++) {
         for (float x = x_start; x <= x_end; x++) {
-            set_canvas_dot(canvas, x, y, 1);
+            set_canvas_dot(canvas, x, y, state);
         }
     }
 }
@@ -345,13 +349,14 @@ void draw_frame(
     float y_start,
     float x_end,
     float y_end,
-    float width
+    float width,
+    int state
 ) {
     float half_width = width / 2.0;
-    draw_line(canvas, x_start, y_start, x_end, y_start, width);
-    draw_line(canvas, x_end, y_start - half_width, x_end, y_end + half_width, width);
-    draw_line(canvas, x_start, y_end, x_end, y_end, width);
-    draw_line(canvas, x_start, y_start - half_width, x_start, y_end + half_width, width);
+    draw_line(canvas, x_start, y_start, x_end, y_start, width, state);
+    draw_line(canvas, x_end, y_start - half_width, x_end, y_end + half_width, width, state);
+    draw_line(canvas, x_start, y_end, x_end, y_end, width, state);
+    draw_line(canvas, x_start, y_start - half_width, x_start, y_end + half_width, width, state);
 }
 
 void draw_triangle(
@@ -361,7 +366,8 @@ void draw_triangle(
     float x2,
     float y2,
     float x3,
-    float y3
+    float y3,
+    int state
 ) {
     x1 *= aspect;
     x2 *= aspect;
@@ -412,7 +418,7 @@ void draw_triangle(
 
     for (int scanline_y = roundf(y1); scanline_y <= roundf(y2); scanline_y++) {
         for (float x = roundf(cur_x1); x <= roundf(cur_x2); x++) {
-            set_canvas_dot(canvas, x, scanline_y, 1);
+            set_canvas_dot(canvas, x, scanline_y, state);
         }
         cur_x1 += inv_slope1;
         cur_x2 += inv_slope2;
@@ -432,7 +438,7 @@ void draw_triangle(
 
     for (int scanline_y = roundf(y3); scanline_y >= roundf(y2); scanline_y--) {
         for (float x = roundf(cur_x1); x <= roundf(cur_x2); x++) {
-            set_canvas_dot(canvas, x, scanline_y, 1);
+            set_canvas_dot(canvas, x, scanline_y, state);
         }
         cur_x1 -= inv_slope1;
         cur_x2 -= inv_slope2;
@@ -444,7 +450,8 @@ void draw_black_hole(
     float x_center,
     float y_center,
     float radius,
-    float width
+    float width,
+    int state
 ) {
     x_center *= aspect;
 
@@ -463,7 +470,7 @@ void draw_black_hole(
             distance = hypotf(cathesus1, cathesus2);
 
             if (fabsf(distance - radius) < width + width * (cathesus1 / cathesus2)) {
-                set_canvas_dot(canvas, x, y, 1);
+                set_canvas_dot(canvas, x, y, state);
             }
         }
     }
